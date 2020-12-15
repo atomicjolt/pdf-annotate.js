@@ -1,14 +1,16 @@
 const path = require('path');
 
 module.exports = {
-  entry: './docs/main.js',
-
+  devtool: 'source-map',
+  plugins: [],
+  entry: 'index.js',
+  mode: 'production',
   output: {
     filename: 'index.js',
-    path: path.join(__dirname, 'docs', '__build__'),
-    publicPath: '/__build__/'
+    path: path.join(__dirname, 'web-dist'),
+    library: 'PDFAnnotate',
+    libraryTarget: 'umd'
   },
-
   module: {
     rules: [
       {
@@ -16,7 +18,8 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          presets: ['@babel/preset-env']
+          presets: ['@babel/preset-env'],
+          plugins: ['add-module-exports']
         }
       }
     ]

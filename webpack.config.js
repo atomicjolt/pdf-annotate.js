@@ -1,31 +1,36 @@
-var webpack = require('webpack');
-var fileName = 'pdf-annotate';
-var plugins = [];
+const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+
+let fileName = 'pdf-annotate';
+let optimization = {};
 
 if (process.env.MINIFY) {
-  fileName += '.min'
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin()
-  );
+  fileName += '.min';
+  optimization = {
+    minimize: true,
+    minimizer: [new TerserPlugin()]
+  };
 }
 
 module.exports = {
   devtool: 'source-map',
-  plugins: plugins,
+  optimization: optimization,
   entry: './index.js',
+  mode: 'production',
   output: {
-    filename: 'dist/' + fileName + '.js',
+    filename: fileName + '.js',
+    path: path.join(__dirname, 'dist'),
     library: 'PDFAnnotate',
     libraryTarget: 'umd'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: {
-          presets: ['es2015'],
+        options: {
+          presets: ['@babel/preset-env'],
           plugins: ['add-module-exports']
         }
       }
