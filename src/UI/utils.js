@@ -70,7 +70,7 @@ export function findAnnotationAtPoint(x, y) {
   // Find a target element within SVG
   for (let i=0, l=elements.length; i<l; i++) {
     let el = elements[i];
-    if (pointIntersectsRect(x, y, getOffsetAnnotationRect(el))) {   
+    if (pointIntersectsRect(x, y, getOffsetAnnotationRect(el))) {
       return el;
     }
   }
