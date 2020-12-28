@@ -1,3 +1,8 @@
+/**
+* Credit: MasterOdin & mzabriskie
+* https://github.com/Submitty/pdf-annotate.js
+* Changes to support pdfjs-dist v2.4.456
+*/
 const fs = require('fs');
 const path = require('path');
 const SANDBOX_DIR = path.resolve(process.cwd(), 'sandbox');

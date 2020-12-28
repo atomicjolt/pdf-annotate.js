@@ -17,7 +17,11 @@
     "pdf",
     "annotation"
   ],
-  "author": "Matt Zabriskie",
+  "contributors": [
+    "Matt Zabriskie",
+    "Spencer Balling",
+    "Scott Phillips"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/atomicjolt/pdf-annotate.js/issues"

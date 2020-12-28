@@ -1,3 +1,8 @@
+/**
+* Credit: MasterOdin & mzabriskie
+* https://github.com/Submitty/pdf-annotate.js
+* Changes to support pdfjs-dist v2.4.456
+*/
 import PDFJSAnnotate from '../../';
 import annotations from './annotations';
 

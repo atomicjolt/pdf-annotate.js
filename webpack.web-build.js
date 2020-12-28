@@ -1,3 +1,8 @@
+/**
+* Credit: MasterOdin & lopezjo
+* https://github.com/Submitty/pdf-annotate.js
+* Changes to support pdfjs-dist v2.4.456
+*/
 const path = require('path');
 
 module.exports = {
