@@ -1,4 +1,4 @@
-import twitter from 'twitter-text';
+// import twitter from 'twitter-text';
 import PDFJSAnnotate from '../';
 import initColorPicker from './shared/initColorPicker';
 
@@ -308,7 +308,7 @@ render();
   function insertComment(comment) {
     let child = document.createElement('div');
     child.className = 'comment-list-item';
-    child.innerHTML = twitter.autoLink(twitter.htmlEscape(comment.content));
+    // child.innerHTML = twitter.autoLink(twitter.htmlEscape(comment.content));
 
     commentList.appendChild(child);
   }
