@@ -256,7 +256,7 @@ function handleDocumentMouseup(e) {
           }
 
           t.setAttribute('y', viewY);
-          if (annotation.rectangles) {
+          if (annotation.rectangles.length) {
             annotation.rectangles[i].y = modelY;
           } else if (annotation.y) {
             annotation.y = modelY;
@@ -271,7 +271,7 @@ function handleDocumentMouseup(e) {
           }
 
           t.setAttribute('x', viewX);
-          if (annotation.rectangles) {
+          if (annotation.rectangles.length) {
             annotation.rectangles[i].x = modelX;
           } else if (annotation.x) {
             annotation.x = modelX;
