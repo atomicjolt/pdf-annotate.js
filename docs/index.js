@@ -2360,7 +2360,7 @@
 	return Promise.all([pdfPage.render({canvasContext:canvasContext,viewport:viewport,transform:transform}),_PDFJSAnnotate2.default.render(svg,viewport,annotations)]).then(function(){// Text content is needed for a11y, but is also necessary for creating
 	// highlight and strikeout annotations which require selecting text.
 	return pdfPage.getTextContent({normalizeWhitespace:true}).then(function(textContent){return new Promise(function(resolve,reject){// Render text layer for a11y of text content
-	var textLayer=page.querySelector('.textLayer');var textLayerFactory=new PDFJS.DefaultTextLayerFactory();var textLayerBuilder=textLayerFactory.createTextLayerBuilder(textLayer,pageNumber-1,viewport);textLayerBuilder.setTextContent(textContent);textLayerBuilder.render();// Enable a11y for annotations
+	var textLayer=page.querySelector('.textLayer');var textLayerFactory=PDFJS.DefaultTextLayerFactory();var textLayerBuilder=textLayerFactory.createTextLayerBuilder(textLayer,pageNumber-1,viewport);textLayerBuilder.setTextContent(textContent);textLayerBuilder.render();// Enable a11y for annotations
 	// Timeout is needed to wait for `textLayerBuilder.render`
 	setTimeout(function(){try{(0,_renderScreenReaderHints2.default)(annotations.annotations);resolve();}catch(e){reject(e);}});});});}).then(function(){// Indicate that the page was loaded
 	page.setAttribute('data-loaded','true');return[pdfPage,annotations];});});}/**

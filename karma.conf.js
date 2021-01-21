@@ -1,3 +1,8 @@
+/**
+* Credit: MasterOdin & mzabriskie
+* https://github.com/Submitty/pdf-annotate.js
+* Changes to support pdfjs-dist v2.4.456
+*/
 var webpack = require('webpack');
 
 module.exports = function(config) {
@@ -25,32 +30,41 @@ module.exports = function(config) {
     colors: true,
 
     logLevel: config.LOG_INFO,
-    
+
     autoWatch: true,
 
-    browsers: ['Firefox'],
+    browsers: [
+      'FirefoxHeadless',
+      'ChromeHeadless'
+    ],
 
     singleRun: false,
 
     webpack: {
+      mode: 'development',
+
       cache: true,
       devtool: 'inline-source-map',
       module: {
-        loaders: [
+        rules: [
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel',
-            query: {
-              presets: ['es2015']
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env']
             }
-          }
-        ],
-        postLoaders: [
+          },
           {
             test: /\.js$/,
-            exclude: /(node_modules|test)/,
-            loader: 'istanbul-instrumenter'
+            enforce: 'post',
+            use: {
+              loader: 'istanbul-instrumenter-loader',
+              options: {
+                esModules: true
+              }
+            },
+            include: path.resolve('src/')
           }
         ]
       },
@@ -67,12 +81,11 @@ module.exports = function(config) {
         colors: true
       }
     },
-
-    coverageReporter: {
-      type: 'lcov',
-      dir: 'coverage/',
-      subdir: '.'
+    coverageIstanbulReporter: {
+      reports: [ 'html', 'lcovonly', 'text-summary' ],
+      dir: path.join(__dirname, 'coverage'),
+      combineBrowserReports: true,
+      fixWebpackSourcePaths: true
     }
-
   });
 };

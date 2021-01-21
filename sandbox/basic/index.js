@@ -1,9 +1,14 @@
+/**
+* Credit: MasterOdin & mzabriskie
+* https://github.com/Submitty/pdf-annotate.js
+* Changes to support pdfjs-dist v2.4.456
+*/
 import PDFJSAnnotate from '../../';
 import annotations from './annotations';
 
 const DOCUMENT_ID = 'PDFJSAnnotate.pdf';
 
-PDFJS.workerSrc = '../shared/pdf.worker.js';
+pdfjsViewer.workerSrc = '../shared/pdf.worker.js';
 
 PDFJSAnnotate.StoreAdapter.getAnnotations = (documentId, pageNumber) => {
   return new Promise((resolve, reject) => {
@@ -11,12 +16,13 @@ PDFJSAnnotate.StoreAdapter.getAnnotations = (documentId, pageNumber) => {
   });
 };
 
-PDFJS.getDocument(DOCUMENT_ID).then((pdf) => {
+const loadingTask = pdfjsViewer.getDocument(DOCUMENT_ID);
+
+loadingTask.promise.then((pdf) => {
   Promise.all([
     pdf.getPage(1),
     PDFJSAnnotate.getAnnotations(1)
-  ])
-  .then(([page, annotations]) => {
+  ]).then(([page, annotations]) => {
     data.page = page;
     data.annotations = annotations;
     render();
@@ -34,11 +40,10 @@ scale.onchange = render;
 rotation.onchange = render;
 
 function render() {
-  let viewport = data.page.getViewport(scale.value, rotation.value);
+  let viewport = data.page.getViewport({scale: scale.value, rotation: rotation.value});
   let canvas = document.getElementById('canvas');
   let svg = document.getElementById('svg');
   let canvasContext = canvas.getContext('2d');
-  
   canvas.height = viewport.height;
   canvas.width = viewport.width;
   canvas.style.marginTop = ((viewport.height / 2) * -1) + 'px';
