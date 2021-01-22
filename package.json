@@ -54,7 +54,9 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.7.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "create-stylesheet": "^0.3.0"
+  },
   "files": [
     "dist",
     "src",
