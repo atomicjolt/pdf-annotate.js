@@ -75,7 +75,7 @@ export function renderPage(pageNumber, renderOptions) {
         return new Promise((resolve, reject) => {
           // Render text layer for a11y of text content
           let textLayer = page.querySelector(`.textLayer`);
-          let textLayerFactory = new PDFJS.DefaultTextLayerFactory();
+          let textLayerFactory = new pdfjsViewer.DefaultTextLayerFactory();
           let textLayerBuilder = textLayerFactory.createTextLayerBuilder(textLayer, pageNumber -1, viewport);
           textLayerBuilder.setTextContent(textContent);
           textLayerBuilder.render();
@@ -171,10 +171,10 @@ function approximateFraction(x) {
   }
 
   const x_ = x > 1 ? xinv : x;
-  
+
   // a/b and c/d are neighbours in Farey sequence.
   let a = 0, b = 1, c = 1, d = 1;
-  
+
   // Limit search to order 8.
   while (true) {
     // Generating next term in sequence (order of q).

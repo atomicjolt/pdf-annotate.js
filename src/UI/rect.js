@@ -1,7 +1,6 @@
 import PDFJSAnnotate from '../PDFJSAnnotate';
 import appendChild from '../render/appendChild';
 import {
-  BORDER_COLOR,
   disableUserSelect,
   enableUserSelect,
   findSVGAtPoint,
@@ -13,6 +12,9 @@ import {
 
 let _enabled = false;
 let _type;
+let _highlightColor;
+let _strikeoutColor;
+let _areaColor;
 let overlay;
 let originY;
 let originX;
@@ -57,10 +59,10 @@ function handleDocumentMousedown(e) {
   overlay.style.position = 'absolute';
   overlay.style.top = `${originY - rect.top}px`;
   overlay.style.left = `${originX - rect.left}px`;
-  overlay.style.border = `3px solid ${BORDER_COLOR}`;
+  overlay.style.border = `3px solid #${_areaColor}`;
   overlay.style.borderRadius = '3px';
   svg.parentNode.appendChild(overlay);
-  
+
   document.addEventListener('mousemove', handleDocumentMousemove);
   disableUserSelect();
 }
@@ -154,12 +156,12 @@ function saveRect(type, rects, color) {
 
   let boundingRect = svg.getBoundingClientRect();
 
-  if (!color) {
-    if (type === 'highlight') {
-      color = 'FFFF00';
-    } else if (type === 'strikeout') {
-      color = 'FF0000';
-    }
+  if (type === 'highlight') {
+    color = _highlightColor;
+  } else if (type === 'strikeout') {
+    color = _strikeoutColor;
+  } else if (type === 'area') {
+    color = _areaColor;
   }
 
   // Initialize the annotation
@@ -181,7 +183,7 @@ function saveRect(type, rects, color) {
       });
     }).filter((r) => r.width > 0 && r.height > 0 && r.x > -1 && r.y > -1)
   };
-  
+
   // Short circuit if no rectangles exist
   if (annotation.rectangles.length === 0) {
     return;
@@ -207,11 +209,31 @@ function saveRect(type, rects, color) {
 }
 
 /**
+ * Change highlight color
+ */
+export function setHighlight(highlightColor = '741765') {
+  _highlightColor = highlightColor;
+}
+
+/**
+ * Change strikeout color
+ */
+export function setStrikeout(strikeoutColor = 'EE0512') {
+  _strikeoutColor = strikeoutColor;
+}
+
+/**
+ * Change area border color
+ */
+export function setArea(areaColor = 'EE0512') {
+  _areaColor = areaColor;
+}
+/**
  * Enable rect behavior
  */
 export function enableRect(type) {
   _type = type;
-  
+
   if (_enabled) { return; }
 
   _enabled = true;

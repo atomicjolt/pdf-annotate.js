@@ -3,6 +3,9 @@
 - Introduction
     - Annotation layer for pdf.js
 - Credit
+    - Originial Author's: Matt Zabriskie, Aaron Shafovaloff
+    - Forked from https://github.com/instructure/pdf-annotate.js
+
 
 - API
   - [PDFJSAnnotate](https://github.com/atomicjolt/pdf-annotate.js/blob/master/docs/api/PDFJSAnnotate.md)
