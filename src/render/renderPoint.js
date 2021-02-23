@@ -1,7 +1,7 @@
 import setAttributes from '../utils/setAttributes';
 
 const SIZE = 25;
-const D = 'M499.968 214.336q-113.832 0 -212.877 38.781t-157.356 104.625 -58.311 142.29q0 62.496 39.897 119.133t112.437 97.929l48.546 27.9 -15.066 53.568q-13.392 50.778 -39.06 95.976 84.816 -35.154 153.45 -95.418l23.994 -21.204 31.806 3.348q38.502 4.464 72.54 4.464 113.832 0 212.877 -38.781t157.356 -104.625 58.311 -142.29 -58.311 -142.29 -157.356 -104.625 -212.877 -38.781z';
+const D = 'M16,9V4l1,0c0.55,0,1-0.45,1-1v0c0-0.55-0.45-1-1-1H7C6.45,2,6,2.45,6,3v0 c0,0.55,0.45,1,1,1l1,0v5c0,1.66-1.34,3-3,3h0v2h5.97v7l1,1l1-1v-7H19v-2h0C17.34,12,16,10.66,16,9z';
 
 /**
  * Create SVGElement from an annotation definition.
@@ -12,7 +12,6 @@ const D = 'M499.968 214.336q-113.832 0 -212.877 38.781t-157.356 104.625 -58.311 
  */
 export default function renderPoint(a) {
   let outerSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  let innerSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
   let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
@@ -23,31 +22,20 @@ export default function renderPoint(a) {
     y: a.y
   });
 
-  setAttributes(innerSVG, {
-    width: SIZE,
-    height: SIZE,
-    x: 0,
-    y: (SIZE * 0.05) * -1,
-    viewBox: '0 0 1000 1000'
-  });
-
   setAttributes(rect, {
     width: SIZE,
     height: SIZE,
-    stroke: '#000',
-    fill: '#ff0'
+    fillOpacity: 0,
   });
 
   setAttributes(path, {
     d: D,
-    strokeWidth: 50,
-    stroke: '#000',
-    fill: '#fff'
+    width: parseInt(outerSVG.getAttribute('width')),
+    height: parseInt(outerSVG.getAttribute('height')),
+    fill: `#${a.color}`
   });
 
-  innerSVG.appendChild(path);
   outerSVG.appendChild(rect);
-  outerSVG.appendChild(innerSVG);
-
+  outerSVG.appendChild(path);
   return outerSVG;
 }
