@@ -41,7 +41,6 @@ function reorderAnnotationsByType(documentId, pageNumber, type) {
 
       return annotations;
     })
-    .then(renderScreenReaderHints);
 }
 
 /**
