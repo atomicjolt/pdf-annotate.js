@@ -16,6 +16,7 @@ import {
   scaleDown,
   scaleUp
 } from './utils';
+import { fireEvent } from '../UI/event';
 
 let _enabled = false;
 let isDragging = false, overlay;
@@ -37,7 +38,7 @@ function createEditOverlay(target) {
   let rect = getAnnotationRect(target);
   let styleLeft = rect.left - OVERLAY_BORDER_SIZE;
   let styleTop = rect.top - OVERLAY_BORDER_SIZE;
-  
+
   overlay.setAttribute('id', 'pdf-annotate-edit-overlay');
   overlay.setAttribute('data-target-id', id);
   overlay.style.boxSizing = 'content-box';
@@ -64,7 +65,7 @@ function createEditOverlay(target) {
   anchor.style.right = '-13px';
   anchor.style.width = '25px';
   anchor.style.height = '25px';
-  
+
   overlay.appendChild(anchor);
   parentNode.appendChild(overlay);
   document.addEventListener('click', handleDocumentClick);
@@ -120,7 +121,7 @@ function deleteAnnotation() {
   [...nodes].forEach((n) => {
     n.parentNode.removeChild(n);
   });
-  
+
   PDFJSAnnotate.getStoreAdapter().deleteAnnotation(documentId, annotationId);
 
   destroyEditOverlay();
@@ -224,8 +225,8 @@ function handleDocumentMouseup(e) {
   let target = document.querySelectorAll(`[data-pdf-annotate-id="${annotationId}"]`);
   let type = target[0].getAttribute('data-pdf-annotate-type');
   let svg = overlay.parentNode.querySelector('svg.annotationLayer');
-  let { documentId } = getMetadata(svg);
-  
+  let { documentId, pageNumber } = getMetadata(svg);
+
   overlay.querySelector('a').style.display = '';
 
   function getDelta(propX, propY) {
@@ -312,7 +313,7 @@ function handleDocumentMouseup(e) {
       appendChild(svg, annotation);
     }
 
-    PDFJSAnnotate.getStoreAdapter().editAnnotation(documentId, annotationId, annotation);
+    PDFJSAnnotate.getStoreAdapter().editAnnotation(documentId, pageNumber, annotation);
   });
 
   setTimeout(() => {
@@ -337,6 +338,16 @@ function handleAnnotationClick(target) {
 }
 
 /**
+ * Set the annotation being edited.
+ *
+ * @param {Element} e The annotation element that is to be edited
+ */
+export function setEdit (annotation) {
+  let target = document.querySelector(`[data-pdf-annotate-id='${annotation.id}']`);
+  fireEvent('annotation:click', target);
+}
+
+/**
  * Enable edit mode behavior.
  */
 export function enableEdit () {
@@ -357,4 +368,3 @@ export function disableEdit () {
   _enabled = false;
   removeEventListener('annotation:click', handleAnnotationClick);
 };
-
