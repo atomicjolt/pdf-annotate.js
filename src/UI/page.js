@@ -84,7 +84,6 @@ export function renderPage(pageNumber, renderOptions) {
           // Timeout is needed to wait for `textLayerBuilder.render`
           setTimeout(() => {
             try {
-              renderScreenReaderHints(annotations.annotations);
               resolve();
             } catch (e) {
               reject(e);

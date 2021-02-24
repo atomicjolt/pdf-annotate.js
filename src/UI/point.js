@@ -42,9 +42,7 @@ function handleInputBlur() {
  * @param {Event} e The DOM event to handle
  */
 function handleInputKeyup(e) {
-  if (e.keyCode === 27) {
-    // closeInput();
-  } else if (e.keyCode === 13) {
+  if (e.keyCode === 13) {
     savePoint();
   }
 }
