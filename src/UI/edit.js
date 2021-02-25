@@ -19,6 +19,7 @@ import {
 import { fireEvent } from '../UI/event';
 
 let _enabled = false;
+let _userCanEdit = false;
 let isDragging = false, overlay;
 let dragOffsetX, dragOffsetY, dragStartX, dragStartY;
 const OVERLAY_BORDER_SIZE = 3;
@@ -66,7 +67,9 @@ function createEditOverlay(target) {
   anchor.style.width = '25px';
   anchor.style.height = '25px';
 
-  overlay.appendChild(anchor);
+  if (_userCanEdit) {
+    overlay.appendChild(anchor);
+  }
   parentNode.appendChild(overlay);
   document.addEventListener('click', handleDocumentClick);
   document.addEventListener('keyup', handleDocumentKeyup);
@@ -133,7 +136,10 @@ function deleteAnnotation() {
  * @param {Event} e The DOM event that needs to be handled
  */
 function handleDocumentClick(e) {
-  if (!findSVGAtPoint(e.clientX, e.clientY)) { return; }
+  if (!findSVGAtPoint(e.clientX, e.clientY)) {
+    _userCanEdit = false;
+    return;
+  }
 
   // Remove current overlay
   let overlay = document.getElementById('pdf-annotate-edit-overlay');
@@ -152,7 +158,7 @@ function handleDocumentClick(e) {
  * @param {Event} e The DOM event that needs to be handled
  */
 function handleDocumentKeyup(e) {
-  if (overlay && e.keyCode === 46 &&
+  if (overlay && _userCanEdit && e.keyCode === 46 &&
       e.target.nodeName.toLowerCase() !== 'textarea' &&
       e.target.nodeName.toLowerCase() !== 'input') {
     deleteAnnotation();
@@ -173,7 +179,7 @@ function handleDocumentMousedown(e) {
   let target = document.querySelector(`[data-pdf-annotate-id="${annotationId}"]`);
   let type = target.getAttribute('data-pdf-annotate-type');
 
-  if (type === 'highlight' || type === 'strikeout') { return; }
+  if (!_userCanEdit || type === 'highlight' || type === 'strikeout') { return; }
 
   isDragging = true;
   dragOffsetX = e.clientX;
@@ -340,11 +346,20 @@ function handleAnnotationClick(target) {
 /**
  * Set the annotation being edited.
  *
- * @param {Element} e The annotation element that is to be edited
+ * @param {Element} annotation The annotation object that is to be edited
  */
 export function setEdit (annotation) {
   let target = document.querySelector(`[data-pdf-annotate-id='${annotation.id}']`);
   fireEvent('annotation:click', target);
+}
+
+/**
+ * Set the current user permissions.
+ *
+ * @param {Element} userCanEdit Boolean value that determines if the current user can edit the annotation
+ */
+export function setUser (userCanEdit) {
+  _userCanEdit = userCanEdit;
 }
 
 /**
