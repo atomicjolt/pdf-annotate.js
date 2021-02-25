@@ -6,9 +6,14 @@ import {
   getMetadata,
   scaleDown
 } from './utils';
+import {
+  setEdit
+} from './edit'
 
 let _enabled = false;
-let input;
+let _pointColor;
+let clientX;
+let clientY;
 
 /**
  * Handle document.mouseup event
@@ -16,24 +21,12 @@ let input;
  * @param {Event} The DOM event to be handled
  */
 function handleDocumentMouseup(e) {
-  if (input || !findSVGAtPoint(e.clientX, e.clientY)) {
-    return
+  if (!findSVGAtPoint(e.clientX, e.clientY)) {
+    return;
   }
-  
-  input = document.createElement('input');
-  input.setAttribute('id', 'pdf-annotate-point-input');
-  input.setAttribute('placeholder', 'Enter comment');
-  input.style.border = `3px solid ${BORDER_COLOR}`;
-  input.style.borderRadius = '3px';
-  input.style.position = 'absolute';
-  input.style.top = `${e.clientY}px`;
-  input.style.left = `${e.clientX}px`;
-
-  input.addEventListener('blur', handleInputBlur);
-  input.addEventListener('keyup', handleInputKeyup);
-
-  document.body.appendChild(input);
-  input.focus();
+  clientX = e.clientX;
+  clientY = e.clientY;
+  savePoint();
 }
 
 /**
@@ -49,9 +42,7 @@ function handleInputBlur() {
  * @param {Event} e The DOM event to handle
  */
 function handleInputKeyup(e) {
-  if (e.keyCode === 27) {
-    closeInput();
-  } else if (e.keyCode === 13) {
+  if (e.keyCode === 13) {
     savePoint();
   }
 }
@@ -60,48 +51,37 @@ function handleInputKeyup(e) {
  * Save a new point annotation from input
  */
 function savePoint() {
-  if (input.value.trim().length > 0) {
-    let clientX = parseInt(input.style.left, 10);
-    let clientY = parseInt(input.style.top, 10);
-    let content = input.value.trim();
-    let svg = findSVGAtPoint(clientX, clientY);
-    if (!svg) {
-      return;
-    }
-
-    let rect = svg.getBoundingClientRect();
-    let { documentId, pageNumber } = getMetadata(svg);
-    let annotation = Object.assign({
-        type: 'point'
-      }, scaleDown(svg, {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-      })
-    );
-
-    PDFJSAnnotate.getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
-      .then((annotation) => {
-        PDFJSAnnotate.getStoreAdapter().addComment(
-          documentId,
-          annotation.id,
-          content
-        );
-
-        appendChild(svg, annotation);
-      });
+  let svg = findSVGAtPoint(clientX, clientY);
+  if (!svg) {
+    return;
   }
 
-  closeInput();
+  let rect = svg.getBoundingClientRect();
+  let { documentId, pageNumber } = getMetadata(svg);
+  let annotation = Object.assign({
+      type: 'point',
+      color: _pointColor
+    }, scaleDown(svg, {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    })
+  );
+
+  PDFJSAnnotate.getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
+    .then((annotation) => {
+      appendChild(svg, annotation);
+      PDFJSAnnotate.getStoreAdapter().getAnnotations(documentId, pageNumber)
+        .then((annotations) => {
+          setEdit(annotation)
+        });
+    });
 }
 
 /**
- * Close the input element
+ * Change point color
  */
-function closeInput() {
-  input.removeEventListener('blur', handleInputBlur);
-  input.removeEventListener('keyup', handleInputKeyup);
-  document.body.removeChild(input);
-  input = null;
+export function setPoint(pointColor = 'EE0512') {
+  _pointColor = pointColor;
 }
 
 /**
@@ -123,4 +103,3 @@ export function disablePoint() {
   _enabled = false;
   document.removeEventListener('mouseup', handleDocumentMouseup);
 }
-
