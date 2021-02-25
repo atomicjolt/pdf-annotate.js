@@ -26,6 +26,8 @@ document.addEventListener('click', function handleDocumentClick(e) {
   // Emit annotation:click if target was clicked
   if (target) {
     emitter.emit('annotation:click', target);
+  } else {
+    emitter.emit('document:click', e);
   }
 
   clickNode = target;

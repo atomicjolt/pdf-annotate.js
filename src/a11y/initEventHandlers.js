@@ -12,12 +12,10 @@ export default function initEventHandlers() {
   addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
     reorderAnnotationsByType(documentId, pageNumber, annotation.type);
   });
-  addEventListener('annotation:edit', (documentId, annotationId, annotation) => {
-    reorderAnnotationsByType(documentId, annotation.page, annotation.type);
+  addEventListener('annotation:edit', (documentId, pageNumber, annotation) => {
+    reorderAnnotationsByType(documentId, pageNumber, annotation.type);
   });
   addEventListener('annotation:delete', removeAnnotation);
-  addEventListener('comment:add', insertComment);
-  addEventListener('comment:delete', removeComment);
 }
 
 /**

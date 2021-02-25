@@ -80,9 +80,9 @@ export default class StoreAdapter {
   __editAnnotation(documentId, pageNumber, annotation) { abstractFunction('editAnnotation'); }
   get editAnnotation() { return this.__editAnnotation; }
   set editAnnotation(fn) {
-    this.__editAnnotation = function editAnnotation(documentId, annotationId, annotation) {
+    this.__editAnnotation = function editAnnotation(documentId, pageNumber, annotation) {
       return fn(...arguments).then((annotation) => {
-        fireEvent('annotation:edit', documentId, annotationId, annotation);
+        fireEvent('annotation:edit', documentId, pageNumber, annotation);
         return annotation;
       });
     };
